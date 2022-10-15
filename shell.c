@@ -10,9 +10,9 @@ int main(int argc, char *argv[], char *evnp[])
 
   while(true)
     {
-      initCmd(&directory);
+      initCmd(directory);
       type_prompt();
-      getCmd(&directory, argv_child, evnp_child);
+      getCmd(directory, argv_child, evnp_child);
       argc_child = getArgv(argv_child); /* getArgv() returns the arguments' amount */
       /*printCurrState(&directory, argv_child, evnp_child);*/
       printArgs(argc_child, argv_child);
@@ -61,6 +61,7 @@ void type_prompt()
 void initCmd(char directory[])
 {
   strcpy(directory, "/bin/");
+  fflush(stdin);
 }
 
 void getCmd(char directory[], char *argv_child[], char *evnp_child[])
@@ -95,16 +96,16 @@ int getArgv(char *argv_child[])
     /*printf("first token: <%s>\n", token);*/
     while(token)
       {
-        if(isEmpty(token)) 
-          break;
+        /*if(isEmpty(token)) 
+          break;*/
         if(lastCharIsEnter(token))
         {
           token = removeEnter(token);
-          argv_child[argc_child] = (char*)malloc(strlen(token));
-          strncpy(argv_child[argc_child], token, strlen(token));
+          argv_child[argc_child] = (char*)malloc(strlen(token)+1);
+          strncpy(argv_child[argc_child], token, strlen(token)+1);
           return argc_child;
         }
-        argv_child[argc_child] = (char*)malloc(strlen(token));
+        argv_child[argc_child] = (char*)malloc(strlen(token)+1);
         strcpy(argv_child[argc_child], token);
         /*printf("token: %s\n", token);
         printf("argv[%d]: %s\n", argc_child, argv_child[argc_child]);*/
@@ -167,8 +168,5 @@ int lastCharIsEnter(char *line)
 
 char* removeEnter(char *line)
 {
-  /*char *token = NULL;
-  token = strtok(line, )
-  printf("")*/
-  return(strtok(line, "\n"));
+  return(strtok(line, "\n\0"));
 }
